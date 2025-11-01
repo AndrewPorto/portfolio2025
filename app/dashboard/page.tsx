@@ -35,6 +35,18 @@ export default function DashboardPage() {
     colorClasses: "",
   });
 
+  const colorOptions = [
+    { value: "blue", label: "Azul", hex: "#3b82f6" },
+    { value: "purple", label: "Roxo", hex: "#a855f7" },
+    { value: "orange", label: "Laranja", hex: "#f97316" },
+  ];
+
+  const sizeOptions = [
+    { value: "small", label: "Pequeno" },
+    { value: "medium", label: "Médio" },
+    { value: "large", label: "Grande" },
+  ];
+
   // Verificar autenticação
   useEffect(() => {
     if (!authLoading && !user) {
@@ -271,23 +283,46 @@ export default function DashboardPage() {
             disabled={submitting}
           />
 
-          <input
-            type="text"
-            placeholder="Tamanho (ex: small, medium, large)"
+          {/* Seletor de tamanho */}
+          <select
             value={form.sizeClasses}
             onChange={(e) => setForm({ ...form, sizeClasses: e.target.value })}
             className="w-full p-2 rounded bg-gray-800 border border-gray-700"
             disabled={submitting}
-          />
+          >
+            <option value="">Selecione o tamanho</option>
+            {sizeOptions.map((s) => (
+              <option key={s.value} value={s.value}>{s.label}</option>
+            ))}
+          </select>
 
-          <input
-            type="text"
-            placeholder="Cor (ex: blue, purple, orange)"
-            value={form.colorClasses}
-            onChange={(e) => setForm({ ...form, colorClasses: e.target.value })}
-            className="w-full p-2 rounded bg-gray-800 border border-gray-700"
-            disabled={submitting}
-          />
+          {/* Seletor de cor com preview */}
+          <div className="relative">
+            <label className="block text-sm text-gray-400 mb-1">Cor</label>
+            <div className="flex items-center gap-3">
+              <div
+                className="w-6 h-6 rounded-full border border-gray-600"
+                style={{
+                  backgroundColor:
+                    colorOptions.find((c) => c.value === form.colorClasses)?.hex || "#1f2937",
+                }}
+              ></div>
+
+              <select
+                value={form.colorClasses}
+                onChange={(e) => setForm({ ...form, colorClasses: e.target.value })}
+                className="flex-1 p-2 rounded bg-gray-800 border border-gray-700"
+                disabled={submitting}
+              >
+                <option value="">Selecione a cor</option>
+                {colorOptions.map((color) => (
+                  <option key={color.value} value={color.value}>
+                    {color.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
 
           <button
             type="submit"
