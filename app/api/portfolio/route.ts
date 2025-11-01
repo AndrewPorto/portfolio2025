@@ -1,6 +1,6 @@
 import { db } from '@/lib/firebase';
 import { collection, getDocs, addDoc, deleteDoc, doc, DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
-export const runtime = 'nodejs';
+
 
 interface Project {
   id: string;
@@ -75,20 +75,29 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    const { id } = await request.json();
+    console.log("🔥 DELETE chamado");
+
+  
+    const body = await request.json();
+    const id = body?.id;
 
     if (!id) {
       return Response.json({ error: "ID é obrigatório" }, { status: 400 });
     }
 
+    console.log("🗑️ Deletando projeto com ID:", id);
+
     const docRef = doc(db, 'projects', id);
     await deleteDoc(docRef);
-    
-    return Response.json({ message: "Projeto deletado com sucesso" });
-  } catch (error) {
-    console.error("Erro ao deletar projeto:", error);
+
+    console.log("✅ Projeto deletado com sucesso!");
+
+    return Response.json({ message: "Projeto deletado com sucesso" }, { status: 200 });
+
+  } catch (error: any) {
+    console.error("❌ Erro ao deletar projeto:", error);
     return Response.json(
-      { error: "Erro ao deletar projeto" },
+      { error: error.message || "Erro ao deletar projeto" },
       { status: 500 }
     );
   }
